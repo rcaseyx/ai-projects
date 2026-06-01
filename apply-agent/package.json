@@ -1,0 +1,12 @@
+{
+  "name": "apply-agent",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "apply": "node apply.mjs",
+    "interview": "node interview.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.54.0"
+  }
+}

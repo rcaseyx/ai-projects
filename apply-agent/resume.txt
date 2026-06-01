@@ -1,0 +1,46 @@
+RYAN CASEY
+rcaseyx@gmail.com  ·  770-402-8881  ·  Atlanta, GA  ·  LinkedIn
+
+EXPERIENCE
+
+Intuit Mailchimp — Atlanta, GA
+Senior Software Engineer  ·  Nov 2022 – Present
+• Shipped across six areas of mailchimp.com over 4+ years — marketing campaigns, store and pricing, sign-up, developer docs, brand content, and homepage personalization
+• Led engineering on mailchimp.com's first personalization system for prospective visitors — captures preferences on first visit and immediately updates homepage content client-side, loading only what each visitor actually sees
+• Ran sprint ceremonies (daily scrum, planning, capacity, refinement); designed and shipped 15 AI-powered automation tools integrating Jira, GitHub, Slack, and Google Calendar — 5 generalized for multi-team use and merged into Mailchimp's shared cross-team AI-tools repo
+• Led a 14-module homepage redesign — worked with marketing, product, and design to phase overlapping A/B tests so the data stayed clean without slowing launch
+• Sized and sequenced features as stacked PR chains so each step could be reviewed independently
+• On-call rotation for mailchimp.com — triage and response for site-impacting incidents; participated in weekly operational reviews covering performance metrics and uptime
+• Mentored teammates on React patterns, accessibility, and PR sizing
+
+Tin Roof Software / Cognizant Softvision — Atlanta, GA
+Senior Software Engineer I  ·  May 2020 – Nov 2022
+(Embedded consultant on Intuit Mailchimp's Dotcom team; hired FTE Nov 2022)
+• Led 3-engineer team that built an interactive product demo React module — $280K+ in incremental annual booking revenue
+• Rebuilt major portions of mailchimp.com and Mailchimp Presents using React, PHP, and Contentful
+• Onboarding lead for new contractors and incoming Mailchimp FTEs
+• Automated CMS workflows with custom Contentful tooling
+
+NCR Corporation (via Tin Roof Software) — Atlanta, GA
+Software Engineer II  ·  March 2019 – May 2020
+• Built features on NCR's React/Node.js online ordering platform, used by major retail brands
+• One of four engineers with merge approval; contributed architectural input on shared frontend components
+
+Seller Labs — Athens, GA
+Production Support Engineer / QA Analyst  ·  April 2017 – March 2019
+
+SKILLS
+Languages & Frameworks:   TypeScript  ·  JavaScript (ES6+)  ·  React  ·  Next.js  ·  PHP  ·  Node.js  ·  LESS/CSS  ·  GraphQL
+Testing:   Jest  ·  PHPUnit
+CMS & Platforms:   Contentful  ·  GitHub Enterprise  ·  Jira
+Experimentation:   Optimizely  ·  feature-flag rollout  ·  A/B test analytics
+Practices:   Accessibility (WCAG)  ·  Agile/Scrum  ·  AI-assisted engineering
+
+KEY PROJECTS
+AI Engineering Workflow — Architected 15 Claude Code skills automating sprint ceremonies across Jira, GitHub, Slack, and Google Calendar; 5 generalized for multi-team use and merged into Intuit's shared cross-team package. (2024–present)
+Interactive Product Demo — Led a 3-engineer team building a React module that guides users through creating a live email campaign. $280K+ incremental annual booking revenue. (Mailchimp, 2021)
+Homepage Personalization — Built mailchimp.com's first personalization system for prospective visitors — captures preferences on first visit and drives real-time homepage updates client-side, with performance-aware delivery. (Mailchimp, 2024–present)
+
+EDUCATION
+University of Georgia  ·  B.S., Management Information Systems  ·  2016  ·  GPA: 3.42
+Thinkful  ·  Full Stack Flex (JavaScript / React / Node.js)  ·  2019
