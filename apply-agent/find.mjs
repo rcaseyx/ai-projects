@@ -1,5 +1,6 @@
 // find.mjs — discover matching job postings and pipe into apply pipeline
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config({ override: true });
 import fs from "fs";
 import os from "os";
 import path from "path";

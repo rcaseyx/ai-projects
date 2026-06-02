@@ -1,5 +1,6 @@
 // digest.mjs — fetch top 3 job matches and email them via Resend
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config({ override: true });
 import { Resend } from "resend";
 
 const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID;
