@@ -4,9 +4,12 @@
   "type": "module",
   "scripts": {
     "apply": "node apply.mjs",
-    "interview": "node interview.mjs"
+    "interview": "node interview.mjs",
+    "find": "node find.mjs",
+    "digest": "node digest.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.54.0"
+    "@anthropic-ai/sdk": "^0.54.0",
+    "resend": "^4.0.0"
   }
 }

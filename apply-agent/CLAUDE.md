@@ -22,6 +22,8 @@ node interview.mjs jobs/<slug>
 
 `find.mjs` polls Greenhouse boards for the watchlist companies and Adzuna for broader discovery, filters by role/seniority/location, scores by stack match, and lets you pick one to run through the full apply pipeline.
 
+`digest.mjs` runs the same logic non-interactively and emails the top 3 matches via Resend. Triggered automatically by `.github/workflows/job-digest.yml` every Mon/Wed/Fri at 10am EST. Requires `RESEND_API_KEY` set as a GitHub secret (resend.com → API Keys). To test locally: `RESEND_API_KEY=your_key node digest.mjs`.
+
 Outputs are saved to `jobs/<company-role-slug>/`:
 - `job-posting.txt` — original posting
 - `tailored-resume.txt` — resume rewritten for this role
