@@ -1,4 +1,5 @@
 // find.mjs — discover matching job postings and pipe into apply pipeline
+import "dotenv/config";
 import fs from "fs";
 import os from "os";
 import path from "path";
@@ -8,8 +9,13 @@ import { spawnSync } from "child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const ADZUNA_APP_ID = "3395fea2";
-const ADZUNA_APP_KEY = "06ee22134d98a0c94a3c66bed4e7bdbf";
+const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID;
+const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY;
+
+if (!ADZUNA_APP_ID || !ADZUNA_APP_KEY) {
+  console.error("Missing ADZUNA_APP_ID or ADZUNA_APP_KEY — copy .env.example to .env and fill in values.");
+  process.exit(1);
+}
 
 const STACK = [
   "typescript", "javascript", "react", "next.js", "nextjs", "node.js", "nodejs",

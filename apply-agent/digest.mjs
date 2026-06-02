@@ -1,9 +1,15 @@
 // digest.mjs — fetch top 3 job matches and email them via Resend
+import "dotenv/config";
 import { Resend } from "resend";
 
-const ADZUNA_APP_ID = "3395fea2";
-const ADZUNA_APP_KEY = "06ee22134d98a0c94a3c66bed4e7bdbf";
+const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID;
+const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY;
 const TO_EMAIL = "rcaseyx@gmail.com";
+
+if (!ADZUNA_APP_ID || !ADZUNA_APP_KEY) {
+  console.error("Missing ADZUNA_APP_ID or ADZUNA_APP_KEY — check .env or GitHub secrets.");
+  process.exit(1);
+}
 const FROM_EMAIL = "onboarding@resend.dev"; // swap for verified domain if you add one
 
 const STACK = [
