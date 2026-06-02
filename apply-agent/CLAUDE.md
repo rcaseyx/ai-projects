@@ -7,6 +7,9 @@ A multi-agent pipeline that takes a job posting and produces a full application 
 ## Usage
 
 ```bash
+# Discover matching jobs and pipe into apply pipeline
+node find.mjs
+
 # Full pipeline — paste a job posting interactively
 node apply.mjs
 
@@ -16,6 +19,8 @@ node apply.mjs path/to/job-posting.txt
 # Interactive mock interview (after running apply.mjs)
 node interview.mjs jobs/<slug>
 ```
+
+`find.mjs` polls Greenhouse boards for the watchlist companies and Adzuna for broader discovery, filters by role/seniority/location, scores by stack match, and lets you pick one to run through the full apply pipeline.
 
 Outputs are saved to `jobs/<company-role-slug>/`:
 - `job-posting.txt` — original posting
