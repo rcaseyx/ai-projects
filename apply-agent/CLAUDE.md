@@ -18,9 +18,14 @@ node apply.mjs path/to/job-posting.txt
 
 # Interactive mock interview (after running apply.mjs)
 node interview.mjs jobs/<slug>
+
+# Track application status (add, update stage, view in-flight)
+node track.mjs
 ```
 
 `find.mjs` polls Greenhouse boards for the watchlist companies and Adzuna for broader discovery, filters by role/seniority/location, scores by stack match, and lets you pick one to run through the full apply pipeline.
+
+`track.mjs` manages application status. State is stored in `status.json` (committed, not gitignored). Stages: `applied → recruiter_screen → hm_screen → technical → onsite → offer / rejected / ghosted / withdrew`. Applications with no activity for 21+ days are flagged as stale.
 
 `digest.mjs` runs the same logic non-interactively and emails the top 3 matches via Resend. Triggered automatically by `.github/workflows/job-digest.yml` every Mon/Wed/Fri at 10am EST. Requires `RESEND_API_KEY` set as a GitHub secret (resend.com → API Keys). To test locally: `RESEND_API_KEY=your_key node digest.mjs`.
 

@@ -1,7 +1,12 @@
 // digest.mjs — fetch top 3 job matches and email them via Resend
 import dotenv from "dotenv";
 dotenv.config({ override: true });
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { Resend } from "resend";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID;
 const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY;
@@ -25,6 +30,8 @@ const WATCHLIST = [
   { name: "Reddit",    slug: "reddit" },
   { name: "Vercel",    slug: "vercel" },
   { name: "Figma",     slug: "figma" },
+  { name: "Airbnb",    slug: "airbnb" },
+  { name: "Calendly",  slug: "calendly" },
   { name: "Netflix",   slug: "netflix" },
   { name: "NVIDIA",    slug: "nvidia" },
   { name: "Adobe",     slug: "adobe" },
@@ -136,6 +143,32 @@ if (!top3.length) {
   process.exit(0);
 }
 
+// ─── In-flight applications ──────────────────────────────────────────────────
+
+const STAGE_LABELS = {
+  applied:          "Applied",
+  recruiter_screen: "Recruiter screen",
+  hm_screen:        "HM screen",
+  technical:        "Technical",
+  onsite:           "Onsite",
+  offer:            "Offer",
+  rejected:         "Rejected",
+  ghosted:          "Ghosted",
+  withdrew:         "Withdrew",
+};
+
+const ACTIVE_STAGES = new Set(["applied", "recruiter_screen", "hm_screen", "technical", "onsite"]);
+const GHOST_DAYS = 21;
+
+function daysSince(dateStr) {
+  return Math.floor((Date.now() - new Date(dateStr)) / 86_400_000);
+}
+
+const statusFile = path.join(__dirname, "status.json");
+const inFlight = fs.existsSync(statusFile)
+  ? JSON.parse(fs.readFileSync(statusFile, "utf-8")).filter(a => ACTIVE_STAGES.has(a.stage))
+  : [];
+
 // ─── Build email ─────────────────────────────────────────────────────────────
 
 const dateLabel = new Date().toLocaleDateString("en-US", {
@@ -158,16 +191,38 @@ const cardHtml = (job, i) => `
     <a href="${job.url}" style="color:#2563eb;font-weight:500;text-decoration:none;">View posting →</a>
   </div>`;
 
+const inFlightHtml = inFlight.length ? `
+  <div style="margin-bottom:32px;">
+    <h3 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;margin:0 0 12px;">In flight</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      ${inFlight.map(app => {
+        const days = daysSince(app.last_activity);
+        const stale = days >= GHOST_DAYS;
+        const staleStyle = stale ? "color:#ef4444;" : "color:#6b7280;";
+        return `<tr style="border-bottom:1px solid #f3f4f6;">
+          <td style="padding:8px 0;font-weight:500;color:#111827;">${app.company}</td>
+          <td style="padding:8px 4px;color:#374151;">${app.role}</td>
+          <td style="padding:8px 0;white-space:nowrap;color:#374151;">${STAGE_LABELS[app.stage] || app.stage}</td>
+          <td style="padding:8px 0 8px 8px;white-space:nowrap;${staleStyle}">${days}d${stale ? " ⚠" : ""}</td>
+        </tr>`;
+      }).join("")}
+    </table>
+  </div>` : "";
+
 const html = `
 <!DOCTYPE html>
 <html>
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;padding:32px 16px;margin:0;">
   <div style="max-width:560px;margin:0 auto;">
-    <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 4px;">Top job matches</h2>
-    <p style="color:#6b7280;margin:0 0 24px;">${dateLabel} &nbsp;·&nbsp; ${top3.length} picks from ${watchlistRaw.length + adzunaRaw.length} total matches</p>
+    <h2 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 4px;">Job digest</h2>
+    <p style="color:#6b7280;margin:0 0 24px;">${dateLabel}</p>
+    ${inFlightHtml}
+    <h3 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;margin:0 0 12px;">New picks</h3>
+    <p style="color:#6b7280;font-size:13px;margin:0 0 12px;">${top3.length} picks from ${watchlistRaw.length + adzunaRaw.length} total matches</p>
     ${top3.map(cardHtml).join("")}
     <p style="color:#9ca3af;font-size:12px;margin-top:24px;">
       Run <code style="background:#f3f4f6;padding:2px 5px;border-radius:3px;">node find.mjs</code> to see all matches and pipe one into the apply pipeline.
+      Run <code style="background:#f3f4f6;padding:2px 5px;border-radius:3px;">node track.mjs</code> to update application status.
     </p>
   </div>
 </body>
