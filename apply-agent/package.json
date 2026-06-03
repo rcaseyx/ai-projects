@@ -7,11 +7,13 @@
     "apply": "node apply.mjs",
     "track": "node track.mjs",
     "interview": "node interview.mjs",
-    "digest": "node digest.mjs"
+    "digest": "node digest.mjs",
+    "pdf": "node pdf.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.54.0",
     "dotenv": "^17.4.2",
+    "puppeteer": "^24.0.0",
     "resend": "^4.0.0"
   }
 }
