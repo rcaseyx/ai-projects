@@ -55,7 +55,7 @@ async function tailorResume(jobPosting) {
   process.stdout.write("Tailoring resume...");
   const response = await client.messages.create({
     model: "claude-opus-4-8",
-    max_tokens: 4000,
+    max_tokens: 4500,
     system: `You are an expert resume writer who tailors resumes to specific job postings.
 
 Rules:
@@ -64,7 +64,10 @@ Rules:
 - Rephrase bullets to echo the job description's language — only when it's accurate
 - Emphasize what this role clearly values; de-emphasize what it doesn't
 - Keep the same structure and formatting as the original
-- Output the tailored resume as plain text only, no commentary`,
+
+Output the tailored resume as plain text, then on a new line write exactly:
+---CHANGES---
+Then a bullet list of every specific change made: what was reordered, rephrased, added emphasis to, or de-emphasized, and the reason for each.`,
     messages: [
       {
         role: "user",
@@ -73,7 +76,13 @@ Rules:
     ],
   });
   console.log(" done.");
-  return response.content[0].text;
+  const raw = response.content[0].text;
+  const splitIdx = raw.indexOf("---CHANGES---");
+  if (splitIdx === -1) return { resume: raw, changes: "" };
+  return {
+    resume: raw.slice(0, splitIdx).trim(),
+    changes: raw.slice(splitIdx + 13).trim(),
+  };
 }
 
 // ─── Agent 2: Candidate Review ─────────────────────────────────────────────────
@@ -187,11 +196,12 @@ ${review}`,
 
 // ─── Save outputs ───────────────────────────────────────────────────────────────
 
-function saveOutputs(slug, jobPosting, tailored, review, prep, study) {
+function saveOutputs(slug, jobPosting, tailored, changes, review, prep, study) {
   const dir = path.join(__dirname, "jobs", slug);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, "job-posting.txt"), jobPosting);
   fs.writeFileSync(path.join(dir, "tailored-resume.txt"), tailored);
+  if (changes) fs.writeFileSync(path.join(dir, "tailoring-notes.md"), changes);
   fs.writeFileSync(path.join(dir, "candidate-review.md"), review);
   fs.writeFileSync(path.join(dir, "interview-prep.md"), prep);
   fs.writeFileSync(path.join(dir, "study-plan.md"), study);
@@ -213,17 +223,18 @@ const [slug, tailored] = await Promise.all([
   tailorResume(jobPosting),
 ]);
 
-const review = await candidateReview(tailored, jobPosting);
+const review = await candidateReview(tailored.resume, jobPosting);
 
 const [prep, study] = await Promise.all([
-  interviewPrep(tailored, jobPosting, review),
+  interviewPrep(tailored.resume, jobPosting, review),
   studyPlan(jobPosting, review),
 ]);
 
-const dir = saveOutputs(slug, jobPosting, tailored, review, prep, study);
+const dir = saveOutputs(slug, jobPosting, tailored.resume, tailored.changes, review, prep, study);
 
 console.log(`\nAll outputs saved to jobs/${slug}/`);
 console.log(`  tailored-resume.txt`);
+console.log(`  tailoring-notes.md`);
 console.log(`  candidate-review.md`);
 console.log(`  interview-prep.md`);
 console.log(`  study-plan.md`);
