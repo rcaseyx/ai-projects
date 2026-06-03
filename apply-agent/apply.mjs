@@ -61,7 +61,7 @@ async function tailorResume(jobPosting) {
 Rules:
 - Never fabricate experience, skills, or credentials not in the original resume
 - Reorder bullets to lead with the most relevant work for this specific role
-- Rephrase bullets to echo the job description's language — only when it's accurate
+- Align bullets to the job description's priorities and concepts — but keep the candidate's own voice and phrasing; never lift phrases verbatim from the JD
 - Emphasize what this role clearly values; de-emphasize what it doesn't
 - Keep the same structure and formatting as the original
 
