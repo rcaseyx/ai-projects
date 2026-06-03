@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "apply": "node apply.mjs",
-    "interview": "node interview.mjs",
     "find": "node find.mjs",
+    "apply": "node apply.mjs",
+    "track": "node track.mjs",
+    "interview": "node interview.mjs",
     "digest": "node digest.mjs"
   },
   "dependencies": {
