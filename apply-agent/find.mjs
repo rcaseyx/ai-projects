@@ -24,7 +24,7 @@ const STACK = [
   "contentful", "optimizely", "a/b test", "accessibility", "wcag",
 ];
 
-// Confirmed on Greenhouse: Anthropic, Stripe, Reddit, Vercel, Figma
+// Confirmed on Greenhouse: Anthropic, Stripe, Reddit, Vercel, Figma, Airbnb, Calendly
 // Others (Netflix, NVIDIA, Adobe, GitHub, Slack, Apple) use Workday/own systems —
 // fetchGreenhouse returns [] on 404 so they fail silently; Adzuna covers them.
 const WATCHLIST = [
@@ -33,6 +33,8 @@ const WATCHLIST = [
   { name: "Reddit",    slug: "reddit" },
   { name: "Vercel",    slug: "vercel" },
   { name: "Figma",     slug: "figma" },
+  { name: "Airbnb",    slug: "airbnb" },
+  { name: "Calendly",  slug: "calendly" },
   { name: "Netflix",   slug: "netflix" },
   { name: "NVIDIA",    slug: "nvidia" },
   { name: "Adobe",     slug: "adobe" },
