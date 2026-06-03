@@ -47,9 +47,9 @@ const WATCHLIST_NAMES = new Set(WATCHLIST.map(c => c.name.toLowerCase()));
 
 const TITLE_RE    = /frontend|front.end|ui engineer|ui developer|fullstack|full.stack|software engineer|software developer/i;
 const EXCLUDE_RE  = /\bmanager\b|\bdirector\b|\bvp\b|\bhead of\b|\brecruit/i;
-const SENIOR_RE   = /\b(senior|sr\.?|staff|principal|lead)\b/i;
+const SENIOR_RE   = /\b(senior|sr\.?|staff|principal|lead|l[4-9]|e[4-9]|ic[4-9]|p[4-9])\b/i;
 const LOCATION_RE = /remote|work from home|wfh|distributed|anywhere|worldwide|atlanta|hybrid/i;
-const NON_US_RE   = /\b(uk|united kingdom|london|england|ireland|dublin|germany|berlin|canada|toronto|australia|sydney|europe|emea)\b/i;
+const NON_US_RE   = /\b(uk|united kingdom|london|england|ireland|dublin|germany|berlin|france|paris|spain|madrid|netherlands|amsterdam|poland|warsaw|italy|rome|sweden|stockholm|denmark|copenhagen|norway|oslo|finland|helsinki|switzerland|zurich|belgium|brussels|austria|vienna|portugal|lisbon|canada|toronto|vancouver|montreal|australia|sydney|melbourne|new zealand|auckland|india|bangalore|bengaluru|mumbai|hyderabad|chennai|pune|delhi|noida|gurugram|gurgaon|kolkata|singapore|japan|tokyo|china|beijing|shanghai|south korea|seoul|taiwan|taipei|philippines|manila|pakistan|brazil|mexico|europe|emea|apac|latam)\b/i;
 
 function stripHtml(html = "") {
   return html.replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/gi, " ").replace(/\s+/g, " ").trim();
@@ -133,21 +133,29 @@ console.log(` ${adzunaRaw.length} jobs.\n`);
 
 const seenUrl = new Set();
 const seenTitleCo = new Set();
-const matches = [...watchlistRaw, ...adzunaRaw]
-  .filter(j => {
-    if (!j.url || seenUrl.has(j.url)) return false;
-    const titleCoKey = `${j.company.toLowerCase()}:${j.title.toLowerCase()}`;
-    if (seenTitleCo.has(titleCoKey)) return false;
-    seenUrl.add(j.url);
-    seenTitleCo.add(titleCoKey);
-    return true;
-  })
+function dedupFilter(j) {
+  if (!j.url || seenUrl.has(j.url)) return false;
+  const key = `${j.company.toLowerCase()}:${j.title.toLowerCase()}`;
+  if (seenTitleCo.has(key)) return false;
+  seenUrl.add(j.url);
+  seenTitleCo.add(key);
+  return true;
+}
+
+const watchlistMatches = watchlistRaw
+  .filter(dedupFilter)
   .filter(j => passes(j.title, j.location, j.body))
   .map(j => ({ ...j, score: stackScore(j.body) }))
-  .sort((a, b) => {
-    if (a.source !== b.source) return a.source === "watchlist" ? -1 : 1;
-    return b.score - a.score;
-  });
+  .sort((a, b) => b.score - a.score);
+
+const adzunaMatches = adzunaRaw
+  .filter(dedupFilter)
+  .filter(j => passes(j.title, j.location, j.body))
+  .map(j => ({ ...j, score: stackScore(j.body) }))
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 15);
+
+const matches = [...watchlistMatches, ...adzunaMatches];
 
 if (!matches.length) {
   console.log("No matching jobs found.");
@@ -166,10 +174,10 @@ matches.forEach((j, i) => {
     console.log(j.source === "watchlist" ? "── WATCHLIST ──" : "── ADZUNA ─────");
   }
   const bar = "█".repeat(Math.min(j.score, 5)).padEnd(5, "░");
-  const company = j.company.slice(0, 12).padEnd(12);
-  const loc = (j.location || "location unspecified").slice(0, 35);
-  console.log(`  ${String(i + 1).padStart(2)}. [${company}]  ${j.title}`);
-  console.log(`      ${loc}  ${bar}  ${j.url}`);
+  const company = j.company.slice(0, 16).padEnd(16);
+  const title = j.title.slice(0, 48).padEnd(48);
+  const loc = (j.location || "unspecified").slice(0, 28).padEnd(28);
+  console.log(`  ${String(i + 1).padStart(2)}.  ${company}  ${title}  ${loc}  ${bar}`);
 });
 
 console.log();
@@ -189,7 +197,8 @@ if (isNaN(idx) || idx < 0 || idx >= matches.length) {
 }
 
 const job = matches[idx];
-console.log(`\n→ ${job.title} @ ${job.company}\n`);
+console.log(`\n→ ${job.title} @ ${job.company}`);
+console.log(`  ${job.url}\n`);
 
 const tmp = path.join(os.tmpdir(), `find_job_${Date.now()}.txt`);
 fs.writeFileSync(tmp, [job.title, job.company, job.url, "", job.body].join("\n"));
