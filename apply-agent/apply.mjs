@@ -83,7 +83,7 @@ async function candidateReview(tailoredResume, jobPosting) {
   const response = await client.messages.create({
     model: "claude-opus-4-8",
     max_tokens: 3000,
-    system: `You are a senior hiring manager doing a cold read of a candidate's resume against a job description. Be direct and honest — your job is to give the candidate an accurate picture, not encouragement.`,
+    system: `You are a senior hiring manager doing a cold read of a candidate's resume against a job description. Be direct and honest — your job is to give the candidate an accurate picture, not encouragement. Today's date is ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}.`,
     messages: [
       {
         role: "user",
