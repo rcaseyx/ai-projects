@@ -64,11 +64,9 @@ if (fs.existsSync(resumeJson)) {
   });
 
   try {
-    const raw = response.content[0].text.trim().replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
-    resumeData = JSON.parse(raw);
+    resumeData = JSON.parse(response.content[0].text.trim());
   } catch {
     console.error("\nFailed to parse resume JSON from model response.");
-    console.error("Raw response:", response.content[0].text.slice(0, 500));
     process.exit(1);
   }
 
