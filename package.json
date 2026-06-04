@@ -4,7 +4,6 @@
     "apply": "npm run apply --prefix apply-agent",
     "track": "npm run track --prefix apply-agent",
     "interview": "npm run interview --prefix apply-agent",
-    "digest": "npm run digest --prefix apply-agent",
-    "pdf": "npm run pdf --prefix apply-agent --"
+    "digest": "npm run digest --prefix apply-agent"
   }
 }
