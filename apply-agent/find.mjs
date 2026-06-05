@@ -63,7 +63,7 @@ function stackScore(body) {
 function passes(title, location, body) {
   if (!TITLE_RE.test(title)) return false;
   if (EXCLUDE_RE.test(title)) return false;
-  if (NON_US_RE.test(location)) return false;
+  if (NON_US_RE.test(location + " " + body.slice(0, 500))) return false;
   if (!SENIOR_RE.test(title + " " + body.slice(0, 600))) return false;
   if (!LOCATION_RE.test(location + " " + body.slice(0, 2000))) return false;
   return true;
