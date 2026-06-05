@@ -1,6 +1,8 @@
 RYAN CASEY
 rcaseyx@gmail.com  ·  770-402-8881  ·  Atlanta, GA  ·  LinkedIn
 
+Senior frontend/fullstack engineer with 6+ years of experience. Specializes in React/TypeScript, shipping polished products at scale, and building tooling that engineering teams adopt.
+
 EXPERIENCE
 
 Intuit Mailchimp — Atlanta, GA
@@ -14,15 +16,15 @@ Senior Software Engineer  ·  Nov 2022 – Present
 • Mentored teammates on React patterns, accessibility, and PR sizing; ran sprint ceremonies covering planning, refinement, and capacity
 • On-call rotation for mailchimp.com — triaged and responded to site-impacting incidents; contributed to weekly operational reviews covering performance metrics and uptime
 
-Tin Roof Software / Cognizant Softvision — Atlanta, GA
-Senior Software Engineer I  ·  May 2020 – Nov 2022
+Cognizant Softvision — Atlanta, GA
+Software Engineer II  ·  May 2020 – Nov 2022
 (Embedded consultant on Intuit Mailchimp's Dotcom team; hired FTE Nov 2022)
 • Rebuilt major portions of mailchimp.com and Mailchimp Presents using React, PHP, and Contentful
 • Onboarding lead for new contractors and incoming Mailchimp FTEs
 • Automated CMS workflows with custom Contentful tooling
 
 NCR Corporation (via Tin Roof Software) — Atlanta, GA
-Software Engineer II  ·  March 2019 – May 2020
+Software Engineer I  ·  March 2019 – May 2020
 • Built features on NCR's React/Node.js online ordering platform, used by major retail brands
 • One of four engineers with merge approval; contributed architectural input on shared frontend components
 
