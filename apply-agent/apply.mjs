@@ -13,9 +13,75 @@ const BASE_RESUME = fs.readFileSync(path.join(__dirname, "resume.txt"), "utf-8")
 
 // ─── Input ─────────────────────────────────────────────────────────────────────
 
+async function fetchJobPostingFromUrl(url) {
+  process.stdout.write("Fetching job posting from URL...");
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+  const html = await res.text();
+
+  // Try JSON-LD structured data first (works for most job boards)
+  const jsonLdMatch = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
+  if (jsonLdMatch) {
+    try {
+      const data = JSON.parse(jsonLdMatch[1].trim());
+      const job = Array.isArray(data)
+        ? data.find((d) => d["@type"] === "JobPosting")
+        : data["@type"] === "JobPosting"
+        ? data
+        : null;
+      if (job) {
+        console.log(" done.");
+        return [
+          job.title,
+          job.hiringOrganization?.name,
+          job.jobLocation?.address?.addressLocality,
+          job.description?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+          job.qualifications,
+          job.responsibilities,
+        ]
+          .filter(Boolean)
+          .join("\n\n");
+      }
+    } catch {}
+  }
+
+  // Fall back to Haiku extraction from stripped HTML
+  const rawText = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const response = await client.messages.create({
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 4000,
+    messages: [
+      {
+        role: "user",
+        content: `Extract the full job posting from this webpage content. Include job title, company, location, description, responsibilities, and requirements. Remove navigation, ads, footers, and unrelated content. Return plain text only. If the page is mostly JavaScript with no readable job content, respond with exactly: EXTRACTION_FAILED\n\n${rawText.slice(0, 20000)}`,
+      },
+    ],
+  });
+
+  const extracted = response.content[0].text.trim();
+  if (extracted === "EXTRACTION_FAILED" || extracted.length < 200) {
+    console.log("\nThis page is dynamically rendered and couldn't be scraped.");
+    console.log("Paste the job posting text instead. Type END on its own line when done:\n");
+    const rl = createInterface({ input: process.stdin, output: process.stdout });
+    const lines = [];
+    for await (const line of rl) {
+      if (line.trim() === "END") { rl.close(); break; }
+      lines.push(line);
+    }
+    return lines.join("\n");
+  }
+
+  console.log(" done.");
+  return extracted;
+}
+
 async function getJobPosting() {
   if (process.argv[2]) {
-    return fs.readFileSync(process.argv[2], "utf-8");
+    const arg = process.argv[2];
+    if (arg.startsWith("http://") || arg.startsWith("https://")) {
+      return fetchJobPostingFromUrl(arg);
+    }
+    return fs.readFileSync(arg, "utf-8");
   }
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   console.log("Paste the job posting. Type END on its own line when done:\n");
